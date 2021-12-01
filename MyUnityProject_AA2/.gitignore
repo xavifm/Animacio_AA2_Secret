@@ -20,7 +20,7 @@
 *.userprefs
 
 .vs/*
-Library/*
+#Library/*
 
 AnnotationManager
 assetDatabase3
