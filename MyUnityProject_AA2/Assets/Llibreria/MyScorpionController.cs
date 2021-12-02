@@ -94,7 +94,7 @@ namespace OctopusController
         //TODO: Check when to start the animation towards target and implement Gradient Descent method to move the joints.
         public void NotifyTailTarget(Transform target)
         {
-            if(Vector3.Distance(_tail.Bones[3].position, tailTarget.position) <= 10)
+            if(Vector3.Distance(_tail.Bones[3].position, tailTarget.position) <= 2)
             updateTail();
         }
 
@@ -212,25 +212,26 @@ namespace OctopusController
 
         private void ApproachTarget(Vector3 target)
         {
-            float result = CalculateGradient(target, Solution, 0, DeltaGradient);
-            Solution[0] -= LearningRate * result;
-
-            float angle = Mathf.Clamp(Solution[0], -90, 90);
-            Debug.Log(angle);
-            _tail.Bones[0].localEulerAngles = new Vector3(0, angle, 0);
-
             //TODO
-            for (int i = 1; i < _tail.Bones.Length - 1; i++)
+            for (int i = 0; i < _tail.Bones.Length - 1; i++)
             {
                 float result2 = CalculateGradient(target, Solution, i, DeltaGradient);
-                Solution[i] -= LearningRate * result2;
 
-                //Debug.Log("pos" + i + " " + Solution[i]);
-                //_tail.Bones[i].MoveArm(Solution[i]);
-                //setAngle
-                float angle2 = Mathf.Clamp(Solution[i], 10, 90);
-                _tail.Bones[i].localEulerAngles = new Vector3(-angle2, 0, 0);
-                //Debug.Log(axis);
+                float angle2;
+
+                if (i > 0)
+                {
+                    Solution[i] -= LearningRate * result2;
+                    angle2 = Mathf.Clamp(Solution[i], 10, 90);
+                    _tail.Bones[i].localEulerAngles = new Vector3(-angle2, 0, 0);
+                }
+                else
+                {
+                    Solution[i] -= LearningRate * result2;
+                    angle2 = Mathf.Clamp(Solution[i], 10, 90);
+                    Debug.Log(angle2);
+                    _tail.Bones[i].localEulerAngles = new Vector3(0, angle2, 0);
+                }
                 //_____________________
             }
         }
